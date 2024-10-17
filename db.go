@@ -1,8 +1,17 @@
 package librakv
 
-import "os"
+import (
+	"github.com/gofrs/flock"
+	"os"
+	"path/filepath"
+)
+
+const (
+	FileLockName = "libra.lock"
+)
 
 type Database struct {
+	fileLock *flock.Flock
 }
 
 // Open creates a new Database instance with dataDir and the specified options.
@@ -14,5 +23,17 @@ func Open(dataDir string) (*Database, error) {
 		return nil, err
 	}
 
-	return &Database{}, nil
+	fileLock := flock.New(filepath.Join(dataDir, FileLockName))
+	locked, err := fileLock.TryLock()
+	if err != nil {
+		return nil, err
+	}
+
+	if !locked {
+		return nil, ErrorDatabaseIsRunning
+	}
+
+	return &Database{
+		fileLock: fileLock,
+	}, nil
 }
