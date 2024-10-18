@@ -37,7 +37,7 @@ func Open(dataDir string, opts ...Option) (*Database, error) {
 	}
 
 	if !locked {
-		return nil, ErrorDatabaseIsRunning
+		return nil, ErrDatabaseIsRunning
 	}
 
 	return &Database{
