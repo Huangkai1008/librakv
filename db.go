@@ -1,9 +1,10 @@
 package librakv
 
 import (
-	"github.com/gofrs/flock"
 	"os"
 	"path/filepath"
+
+	"github.com/gofrs/flock"
 )
 
 const (
@@ -11,13 +12,19 @@ const (
 )
 
 type Database struct {
+	options  *Options
 	fileLock *flock.Flock
 }
 
 // Open creates a new Database instance with dataDir and the specified options.
 //
 // If the dataDir doesn't exist, it will be created automatically.
-func Open(dataDir string) (*Database, error) {
+func Open(dataDir string, opts ...Option) (*Database, error) {
+	options := DefaultOptions()
+	if err := options.Apply(opts...); err != nil {
+		return nil, err
+	}
+
 	// If the dataDir does not exist, create it.
 	if err := os.MkdirAll(dataDir, 0755); err != nil {
 		return nil, err
@@ -34,6 +41,7 @@ func Open(dataDir string) (*Database, error) {
 	}
 
 	return &Database{
+		options:  options,
 		fileLock: fileLock,
 	}, nil
 }
