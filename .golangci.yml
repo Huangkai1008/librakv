@@ -230,9 +230,6 @@ linters-settings:
     # Default: ""
     context: "scope"
 
-  usetesting:
-    os-setenv: true
-
 
 linters:
   disable-all: true
