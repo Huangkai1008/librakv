@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	DefaultLogFileThresholdSize = 64 << 20 // 64MB
+	DefaultLogFileSize = 64 << 20 // 64MB
 )
 
 var (
@@ -15,24 +15,24 @@ var (
 
 // Options of the database.
 type Options struct {
-	// logFileThresholdSize is the threshold size of each log file.
+	// logFileSize is the threshold size of each log file.
 	// Active log file will be closed if reach the threshold.
 	//
-	// The default value is DefaultLogFileThresholdSize.
-	logFileThresholdSize uint32
+	// The default value is DefaultLogFileSize.
+	logFileSize uint
 }
 
 func DefaultOptions() *Options {
 	return &Options{
-		logFileThresholdSize: DefaultLogFileThresholdSize,
+		logFileSize: DefaultLogFileSize,
 	}
 }
 
 type Option func(*Options) error
 
-func WithLogFileThresholdSize(size uint32) Option {
+func WithLogFileThresholdSize(size uint) Option {
 	return func(o *Options) error {
-		o.logFileThresholdSize = size
+		o.logFileSize = size
 		return nil
 	}
 }
@@ -48,7 +48,7 @@ func (o *Options) Apply(opts ...Option) error {
 		}
 	}
 
-	if o.logFileThresholdSize <= 0 {
+	if o.logFileSize <= 0 {
 		return ErrLogFileThresholdSize
 	}
 

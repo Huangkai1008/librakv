@@ -1,6 +1,7 @@
 package librakv
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -10,6 +11,10 @@ import (
 const (
 	FileLockName = "libra.lock"
 )
+
+type Key []byte
+
+type Value []byte
 
 type Database struct {
 	options  *Options
@@ -27,13 +32,13 @@ func Open(dataDir string, opts ...Option) (*Database, error) {
 
 	// If the dataDir does not exist, create it.
 	if err := os.MkdirAll(dataDir, 0755); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create datadir (path %s): %w", dataDir, err)
 	}
 
 	fileLock := flock.New(filepath.Join(dataDir, FileLockName))
 	locked, err := fileLock.TryLock()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get file lock: %w", err)
 	}
 
 	if !locked {
