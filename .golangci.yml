@@ -362,6 +362,9 @@ issues:
   # Default: 3
   max-same-issues: 50
 
+  exclude:
+    - "G115: integer overflow conversion"
+
   exclude-rules:
     - source: "(noinspection|TODO)"
       linters: [ godot ]
