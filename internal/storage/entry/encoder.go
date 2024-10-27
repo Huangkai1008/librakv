@@ -37,7 +37,8 @@ func (e *Encoder) Encode(entry *Entry) (int64, error) {
 		return 0, errors.New("invalid buffer type")
 	}
 
-	defer bufPool.Put(&buf)
+	//nolint:staticcheck // buf is byte array
+	defer bufPool.Put(buf)
 
 	// Write CRC.
 	offset := 0

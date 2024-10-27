@@ -26,3 +26,20 @@ func TestEncoder_Encode(t *testing.T) {
 		assert.Len(t, buf.Bytes(), 29)
 	})
 }
+
+func BenchmarkEncoder_Encode(b *testing.B) {
+	var buf bytes.Buffer
+	encoder := entry.NewEncoder(&buf)
+	e, _ := entry.NewEntry(
+		[]byte("key"),
+		[]byte("value"),
+	)
+
+	b.ResetTimer()
+	for range b.N {
+		_, err := encoder.Encode(e)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+}
